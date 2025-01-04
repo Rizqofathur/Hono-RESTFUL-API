@@ -1,7 +1,8 @@
-import { describe, it, expect, afterEach } from 'bun:test';
+import { describe, it, expect, afterEach, beforeEach } from 'bun:test';
 import app from '../src';
 import { logger } from '../src/application/logging';
 import { UserTest } from './test-util';
+import { password } from 'bun';
 
 describe('POST /api/users', () => {
   afterEach(async () => {
@@ -56,5 +57,58 @@ describe('POST /api/users', () => {
     expect(body.data).toBeDefined();
     expect(body.data.username).toBe('test');
     expect(body.data.name).toBe('test');
+  });
+});
+
+describe('POST /api/users/login', () => {
+  beforeEach(async () => {
+    await UserTest.create();
+  });
+
+  afterEach(async () => {
+    await UserTest.delete();
+  });
+
+  it('should be able to login', async () => {
+    const response = await app.request('/api/users/login', {
+      method: 'post',
+      body: JSON.stringify({
+        username: 'test',
+        password: 'test',
+      }),
+    });
+
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.data.token).toBeDefined();
+  });
+  it('should be rejected if username is invalid', async () => {
+    const response = await app.request('/api/users/login', {
+      method: 'post',
+      body: JSON.stringify({
+        username: 'salah',
+        password: 'test',
+      }),
+    });
+
+    expect(response.status).toBe(401);
+
+    const body = await response.json();
+    expect(body.errors).toBeDefined();
+  });
+  it('should be rejected if password is invalid', async () => {
+    const response = await app.request('/api/users/login', {
+      method: 'post',
+      body: JSON.stringify({
+        username: 'test',
+        password: 'salah',
+      }),
+    });
+
+    expect(response.status).toBe(401);
+
+    const body = await response.json();
+    expect(body.errors).toBeDefined();
   });
 });

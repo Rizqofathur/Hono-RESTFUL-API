@@ -2,6 +2,7 @@ import { LoginUserRequest, RegisterUserRequest, toUserResponse, UserResponse } f
 import { UserValidation } from '../validation/user-validation';
 import { prismaClient } from '../application/database';
 import { HTTPException } from 'hono/http-exception';
+import { User } from '@prisma/client';
 
 export class UserService {
   static async register(request: RegisterUserRequest): Promise<UserResponse> {
@@ -76,5 +77,22 @@ export class UserService {
     response.token = user.token!;
 
     return response;
+  }
+
+  static async get(token: string | undefined | null): Promise<User> {
+    token = UserValidation.TOKEN.parse(token);
+    const user = await prismaClient.user.findFirst({
+      where: {
+        token: token,
+      },
+    });
+
+    if (!user) {
+      throw new HTTPException(401, {
+        message: 'Unauthorized',
+      });
+    }
+
+    return user;
   }
 }

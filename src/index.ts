@@ -3,6 +3,7 @@ import { userController } from './controller/user-controller';
 import { error } from 'winston';
 import { HTTPException } from 'hono/http-exception';
 import { ZodError } from 'zod';
+import { Variables } from 'hono/types';
 
 const app = new Hono();
 
