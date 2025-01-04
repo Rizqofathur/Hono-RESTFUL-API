@@ -1,8 +1,13 @@
-import { describe, it, expect } from 'bun:test';
+import { describe, it, expect, afterEach } from 'bun:test';
 import app from '../src';
 import { logger } from '../src/application/logging';
+import { UserTest } from './test-util';
 
 describe('POST /api/users', () => {
+  afterEach(async () => {
+    await UserTest.delete();
+  });
+
   it('should reject register new user if request is invalid', async () => {
     const response = await app.request('/api/users', {
       method: 'post',
@@ -13,12 +18,43 @@ describe('POST /api/users', () => {
       }),
     });
     const body = await response.json();
+    logger.debug(body);
 
+    expect(response.status).toBe(400);
+    expect(body.errors).toBeDefined();
+  });
+
+  it('should reject register new user if username already exist', async () => {
+    await UserTest.create();
+    const response = await app.request('/api/users', {
+      method: 'post',
+      body: JSON.stringify({
+        username: 'test',
+        password: 'test',
+        name: 'test',
+      }),
+    });
+    const body = await response.json();
     logger.debug(body);
     expect(response.status).toBe(400);
     expect(body.errors).toBeDefined();
   });
 
-  it('should reject register new user if username already exist', async () => {});
-  it('should reject register new user success', async () => {});
+  it('should register new user success', async () => {
+    const response = await app.request('/api/users', {
+      method: 'post',
+      body: JSON.stringify({
+        username: 'test',
+        password: 'test',
+        name: 'test',
+      }),
+    });
+    const body = await response.json();
+    logger.debug(body);
+
+    expect(response.status).toBe(200);
+    expect(body.data).toBeDefined();
+    expect(body.data.username).toBe('test');
+    expect(body.data.name).toBe('test');
+  });
 });
