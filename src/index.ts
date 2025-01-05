@@ -5,7 +5,7 @@ import { ZodError } from 'zod';
 
 const app = new Hono();
 
-app.get('/', (c) => {
+app.get('/', (c) => { 
   return c.text('Hello Hono!');
 });
 
