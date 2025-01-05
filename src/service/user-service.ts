@@ -3,14 +3,11 @@ import { UserValidation } from '../validation/user-validation';
 import { prismaClient } from '../application/database';
 import { HTTPException } from 'hono/http-exception';
 import { User } from '@prisma/client';
-import { password } from 'bun';
 
 export class UserService {
   static async register(request: RegisterUserRequest): Promise<UserResponse> {
-    // validasi req
     request = UserValidation.REGISTER.parse(request);
 
-    // cek apakah ada di database atau tidak
     const totalUserWithSameUsername = await prismaClient.user.count({
       where: {
         username: request.username,
@@ -23,51 +20,43 @@ export class UserService {
       });
     }
 
-    // hashing password menggunakan bycript
     request.password = await Bun.password.hash(request.password, {
       algorithm: 'bcrypt',
       cost: 10,
     });
 
-    // save ke database
     const user = await prismaClient.user.create({
       data: request,
     });
 
-    // return response
     return toUserResponse(user);
   }
 
   static async login(request: LoginUserRequest): Promise<UserResponse> {
-    // validasi req
     request = UserValidation.LOGIN.parse(request);
 
-    // cek adakah di database
     let user = await prismaClient.user.findUnique({
       where: {
         username: request.username,
       },
     });
 
-    // jika user tidak ditemukan
     if (!user) {
       throw new HTTPException(401, {
-        message: 'username or password is invalid!',
+        message: 'Username or password is wrong',
       });
     }
 
-    // cek apakah password valid
     const isPasswordValid = await Bun.password.verify(request.password, user.password, 'bcrypt');
     if (!isPasswordValid) {
       throw new HTTPException(401, {
-        message: 'username or password is invalid!',
+        message: 'Username or password is wrong',
       });
     }
 
-    // menambah token ke user
     user = await prismaClient.user.update({
       where: {
-        username: user.username,
+        username: request.username,
       },
       data: {
         token: crypto.randomUUID(),
@@ -76,12 +65,12 @@ export class UserService {
 
     const response = toUserResponse(user);
     response.token = user.token!;
-
     return response;
   }
 
   static async get(token: string | undefined | null): Promise<User> {
     const result = UserValidation.TOKEN.safeParse(token);
+
     if (result.error) {
       throw new HTTPException(401, {
         message: 'Unauthorized',
@@ -127,5 +116,18 @@ export class UserService {
     });
 
     return toUserResponse(user);
+  }
+
+  static async logout(user: User): Promise<boolean> {
+    await prismaClient.user.update({
+      where: {
+        username: user.username,
+      },
+      data: {
+        token: null,
+      },
+    });
+
+    return true;
   }
 }
