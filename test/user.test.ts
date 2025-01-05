@@ -162,3 +162,15 @@ describe('GET /api/users/current', () => {
     expect(body.errors).toBeDefined();
   });
 });
+
+describe('PATCH /api/users/current', () => {
+  beforeEach(async () => {
+    await UserTest.create();
+  });
+  afterEach(async () => {
+    await UserTest.delete();
+  });
+  it('should be reject if request is invalid', async () => {});
+  it('should be able to update name', async () => {});
+  it('should be able to update password', async () => {});
+});
