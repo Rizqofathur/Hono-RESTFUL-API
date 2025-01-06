@@ -92,3 +92,15 @@ describe('POST /api/contacts', () => {
     expect(body.data.phone).toBe('089618246679');
   });
 });
+
+describe('GET /api/contacts', () => {
+  beforeEach(async () => {
+    await ContactTest.deleteAll();
+    await UserTest.create();
+  });
+
+  afterEach(async () => {
+    await ContactTest.deleteAll();
+    await UserTest.delete();
+  });
+});
