@@ -1,5 +1,6 @@
 import { z, ZodType } from 'zod';
 
+// contact validation
 export class ContactValidation {
   static readonly CREATE: ZodType = z.object({
     first_name: z.string().min(1).max(100),
