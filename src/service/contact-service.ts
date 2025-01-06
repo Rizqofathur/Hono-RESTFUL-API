@@ -32,7 +32,7 @@ export class ContactService {
 
     if (!contact) {
       throw new HTTPException(404, {
-        message: 'Contact not found',
+        message: 'Contact is not found',
       });
     }
 

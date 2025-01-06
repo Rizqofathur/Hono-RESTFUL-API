@@ -20,7 +20,7 @@ contactController.post('/api/contacts', async (c) => {
   });
 });
 
-contactController.get('/api/contacts/{id}', async (c) => {
+contactController.get('/api/contacts/:id', async (c) => {
   const user = c.get('user') as User;
   const contactId = Number(c.req.param('id'));
   const response = await ContactService.get(user, contactId);
