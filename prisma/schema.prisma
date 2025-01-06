@@ -7,6 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// User model
 model User {
   username String @id @db.VarChar(100)
   password String @db.VarChar(100)
@@ -18,6 +19,7 @@ model User {
   @@map("users")
 }
 
+// Contact model
 model Contact {
   id          Int @id @default(autoincrement())
   first_name  String @db.VarChar(100)
@@ -33,6 +35,7 @@ model Contact {
   @@map("contacts")
 }
 
+// Address model
 model Address {
   id Int @id @default(autoincrement())
   street String? @db.VarChar(255)
