@@ -140,3 +140,79 @@ describe('GET /api/contacts/{id}', () => {
     expect(body.data.id).toBe(contact.id);
   });
 });
+
+describe('PUT /api/contacts/{id}', () => {
+  beforeEach(async () => {
+    await ContactTest.deleteAll();
+    await UserTest.create();
+    await ContactTest.create();
+  });
+
+  afterEach(async () => {
+    await ContactTest.deleteAll();
+    await UserTest.delete();
+  });
+
+  it('should rejected update contact if request is invalid', async () => {
+    const contact = await ContactTest.get();
+
+    const response = await app.request('/api/contacts/' + (contact.id + 1), {
+      method: 'put',
+      headers: {
+        Authorization: 'test',
+      },
+      body: JSON.stringify({
+        first_name: '',
+      }),
+    });
+
+    expect(response.status).toBe(400);
+
+    const body = await response.json();
+    expect(body.errors).toBeDefined();
+  });
+  it('should rejected update contact if id is not found', async () => {
+    const contact = await ContactTest.get();
+
+    const response = await app.request('/api/contacts/' + (contact.id + 1), {
+      method: 'put',
+      headers: {
+        Authorization: 'test',
+      },
+      body: JSON.stringify({
+        first_name: 'Fathur',
+      }),
+    });
+
+    expect(response.status).toBe(404);
+
+    const body = await response.json();
+    expect(body.errors).toBeDefined();
+  });
+
+  it('should success update contact if request is valid', async () => {
+    const contact = await ContactTest.get();
+
+    const response = await app.request('/api/contacts/' + contact.id, {
+      method: 'put',
+      headers: {
+        Authorization: 'test',
+      },
+      body: JSON.stringify({
+        first_name: 'Fathur',
+        last_name: 'Rizqo',
+        email: 'riszqo@gmail.com',
+        phone: '089618246679',
+      }),
+    });
+
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.data).toBeDefined();
+    expect(body.data.first_name).toBe('Fathur');
+    expect(body.data.last_name).toBe('Rizqo');
+    expect(body.data.email).toBe('riszqo@gmail.com');
+    expect(body.data.phone).toBe('089618246679');
+  });
+});

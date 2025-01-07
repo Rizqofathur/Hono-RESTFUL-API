@@ -7,6 +7,14 @@ export type CreateContactRequest = {
   phone?: String;
 };
 
+export type UpdateContactRequest = {
+  id: number;
+  first_name: String;
+  last_name?: String;
+  email?: String;
+  phone?: String;
+};
+
 export type ContactResponse = {
   id: number;
   first_name: string;
