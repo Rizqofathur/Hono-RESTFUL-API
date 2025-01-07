@@ -3,3 +3,8 @@ export type Paging = {
   total_page: number;
   size: number;
 };
+
+export type PageAble<T> = {
+  data: Array<T>;
+  paging: Paging;
+};
