@@ -3,5 +3,3 @@ export type Paging = {
   total_page: number;
   size: number;
 };
-
-    

@@ -2,18 +2,18 @@ import { Contact } from '@prisma/client';
 import { number } from 'zod';
 
 export type CreateContactRequest = {
-  first_name: String;
-  last_name?: String;
-  email?: String;
-  phone?: String;
+  first_name: string;
+  last_name?: string;
+  email?: string;
+  phone?: string;
 };
 
 export type UpdateContactRequest = {
   id: number;
-  first_name: String;
-  last_name?: String;
-  email?: String;
-  phone?: String;
+  first_name: string;
+  last_name?: string;
+  email?: string;
+  phone?: string;
 };
 
 export type ContactResponse = {
@@ -22,6 +22,14 @@ export type ContactResponse = {
   last_name?: string | null;
   email?: string | null;
   phone?: string | null;
+};
+
+export type SearchContactRequest = {
+  name?: string;
+  phone?: string;
+  email?: string;
+  page: number;
+  size: number;
 };
 
 export function toContactResponse(contact: Contact): ContactResponse {
