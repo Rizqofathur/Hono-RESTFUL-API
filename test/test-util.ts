@@ -1,5 +1,6 @@
 import { Contact } from '@prisma/client';
 import { prismaClient } from '../src/application/database';
+import { number } from 'zod';
 
 export class UserTest {
   static async create() {
@@ -37,13 +38,19 @@ export class ContactTest {
   static async create() {
     await prismaClient.contact.create({
       data: {
-        first_name: 'test',
-        last_name: 'test',
+        first_name: 'Fathur',
+        last_name: 'rizqo',
         email: 'test@gmail.com',
         phone: '089619765542',
         username: 'test',
       },
     });
+  }
+
+  static async createMany(n: number) {
+    for (let i = 0; i < n; i++) {
+      await this.create();
+    }
   }
 
   static async get(): Promise<Contact> {
