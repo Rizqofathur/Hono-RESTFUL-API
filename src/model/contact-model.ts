@@ -1,4 +1,5 @@
 import { Contact } from '@prisma/client';
+import { number } from 'zod';
 
 export type CreateContactRequest = {
   first_name: String;

@@ -10,8 +10,10 @@ app.get('/', (c) => {
   return c.text('Hello Hono!');
 });
 
+// user route api
 app.route('/', userController);
 
+// contact route api
 app.route('/', contactController);
 
 app.onError(async (err, c) => {
