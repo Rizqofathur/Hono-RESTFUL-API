@@ -22,13 +22,11 @@ addressController.post('/api/contacts/:id/addresses', async (c) => {
   });
 });
 
-addressController.get('/api/contacts/:contact_id/adresses/:id', async (c) => {
+addressController.get('/api/contacts/:contact_id/addresses/:id', async (c) => {
   const user = c.get('user') as User;
-  const contactId = Number(c.req.param('contact_id'));
-  const addressId = Number(c.req.param('id'));
   const request: GetAddressRequest = {
-    contact_id: contactId,
-    id: addressId,
+    contact_id: Number(c.req.param('contact_id')),
+    id: Number(c.req.param('id')),
   };
   const response = await AddressService.get(user, request);
 
