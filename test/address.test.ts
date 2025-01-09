@@ -3,7 +3,7 @@ import { AddressTest, ContactTest, UserTest } from './test-util';
 import app from '../src';
 import { add } from 'winston';
 
-describe('POST /api/contacts/{id}/addresses', () => {
+describe('POST /api/contacts/{contactId}/addresses', () => {
   beforeEach(async () => {
     await AddressTest.deleteAll();
     await ContactTest.deleteAll();

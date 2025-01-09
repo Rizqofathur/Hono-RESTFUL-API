@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { ApplicationVariables } from '../model/app-model';
 import { authMiddleware } from '../middleware/auth-middleware';
 import { User } from '@prisma/client';
-import { CreateAdressRequest, GetAddressRequest } from '../model/address-model';
+import { CreateAdressRequest, GetAddressRequest, UpdateAddressRequest } from '../model/address-model';
 import { AddressService } from '../service/address-service';
 export const addressController = new Hono<{ Variables: ApplicationVariables }>();
 
@@ -29,6 +29,22 @@ addressController.get('/api/contacts/:contact_id/addresses/:id', async (c) => {
     id: Number(c.req.param('id')),
   };
   const response = await AddressService.get(user, request);
+
+  return c.json({
+    data: response,
+  });
+});
+
+addressController.put('/api/contacts/:contact_id/addresses/:id', async (c) => {
+  const user = c.get('user') as User;
+  const contactId = Number(c.req.param('contact_id'));
+  const addressId = Number(c.req.param('id'));
+  const request = (await c.req.json()) as UpdateAddressRequest;
+
+  request.contact_id = contactId;
+  request.id = addressId;
+
+  const response = await AddressService.update(user, request);
 
   return c.json({
     data: response,
