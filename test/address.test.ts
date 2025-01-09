@@ -178,6 +178,7 @@ describe('PUT /api/contacts/{contactId}/addresses/{addressesId}', () => {
     const body = await response.json();
     expect(body.errors).toBeDefined();
   });
+
   it('should rejected if address is not found', async () => {
     const contact = await ContactTest.get();
     const address = await AddressTest.get();
