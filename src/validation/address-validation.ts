@@ -29,4 +29,8 @@ export class AddressValidation {
     country: z.string().min(1).max(100),
     postal_code: z.string().min(1).max(10),
   });
+
+  static readonly LIST: ZodType = z.object({
+    contact_id: z.number().positive(),
+  });
 }
