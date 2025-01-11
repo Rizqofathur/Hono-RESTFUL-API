@@ -280,7 +280,7 @@ describe('DELETE /api/contacts/{contactId}/addresses/{addressesId}', () => {
   });
 });
 
-describe('DELETE /api/contacts/{contactId}/addresses/{addressesId}', () => {
+describe('GET /api/contacts/{contactId}/addresses/{addressesId}', () => {
   beforeEach(async () => {
     await AddressTest.deleteAll();
     await ContactTest.deleteAll();
