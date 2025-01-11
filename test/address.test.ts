@@ -228,3 +228,54 @@ describe('PUT /api/contacts/{contactId}/addresses/{addressesId}', () => {
     expect(body.data.postal_code).toBe('99999');
   });
 });
+
+describe('DELETE /api/contacts/{contactId}/addresses/{addressesId}', () => {
+  beforeEach(async () => {
+    await AddressTest.deleteAll();
+    await ContactTest.deleteAll();
+    await UserTest.delete();
+
+    await UserTest.create();
+    await ContactTest.create();
+    await AddressTest.create();
+  });
+
+  afterEach(async () => {
+    await AddressTest.deleteAll();
+    await ContactTest.deleteAll();
+    await UserTest.delete();
+  });
+
+  it('should be rejected if contact is not found', async () => {
+    const contact = await ContactTest.get();
+    const address = await AddressTest.get();
+    const response = await app.request('/api/contacts/' + contact.id + '/addresses/' + (address.id + 1), {
+      method: 'delete',
+      headers: {
+        Authorization: 'test',
+      },
+    });
+
+    expect(response.status).toBe(404);
+
+    const body = await response.json();
+    expect(body.errors).toBeDefined();
+  });
+
+  it('should success if contact is exist', async () => {
+    const contact = await ContactTest.get();
+    const address = await AddressTest.get();
+    const response = await app.request('/api/contacts/' + contact.id + '/addresses/' + address.id, {
+      method: 'delete',
+      headers: {
+        Authorization: 'test',
+      },
+    });
+
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.data).toBeDefined();
+    expect(body.data).toBe(true);
+  });
+});

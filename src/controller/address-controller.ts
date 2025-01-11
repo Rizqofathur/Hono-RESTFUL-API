@@ -52,8 +52,8 @@ addressController.put('/api/contacts/:contact_id/addresses/:address_id', async (
 addressController.delete('/api/contacts/:contact_id/addresses/:address_id', async (c) => {
   const user = c.get('user') as User;
   const request: RemoveAddressRequest = {
-    contact_id: Number(c.req.param('contact_id')),
     id: Number(c.req.param('address_id')),
+    contact_id: Number(c.req.param('contact_id')),
   };
 
   const response = await AddressService.remove(user, request);
